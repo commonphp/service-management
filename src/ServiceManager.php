@@ -25,6 +25,7 @@
 namespace CommonPHP\ServiceManagement;
 
 use CommonPHP\DependencyInjection\DependencyInjector;
+use CommonPHP\ServiceManagement\Contracts\BootstrapperContract;
 use CommonPHP\ServiceManagement\Contracts\ServiceManagerContract;
 use CommonPHP\ServiceManagement\Exceptions\ClassOrInterfaceNotDefinedException;
 use CommonPHP\ServiceManagement\Exceptions\ServiceAlreadyRegisteredException;
@@ -241,6 +242,10 @@ final class ServiceManager implements ServiceManagerContract
             if (!is_object($this->services[$className])) {
                 try {
                     $this->services[$className] = $this->di->instantiate($className, $this->services[$className]);
+                    if ($this->services[$className] instanceof BootstrapperContract)
+                    {
+                        $this->services[$className]->bootstrap($this);
+                    }
                 } catch (Throwable $t) {
                     throw new ServiceResolutionException($className, previous: $t);
                 }

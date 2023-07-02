@@ -70,7 +70,25 @@ class MyCustomServiceProvider implements CommonPHP\ServiceManagement\Contracts\S
 
 // Instantiate the ServiceManager and register the custom service provider.
 $services = new CommonPHP\ServiceManagement\ServiceManager();
-$services->providers->registerProvider(MyCustomServiceProvider::class);
+try {
+    $services->providers->registerProvider(MyCustomServiceProvider::class);
+} catch (CommonPHP\ServiceManagement\Exceptions\ServiceProviderAlreadyRegisteredException $e) {
+    // This exception is thrown when a service provider is being registered more than once.
+    // Proper error message should be returned or logged, and the error should be handled appropriately.
+    die($e);
+} catch (CommonPHP\ServiceManagement\Exceptions\ServiceProviderMissingContractException $e) {
+    // This exception is thrown when a service provider that does not implement the ServiceProviderContract is being registered.
+    // Proper error message should be returned or logged, and the error should be handled appropriately.
+    die($e);
+} catch (CommonPHP\ServiceManagement\Exceptions\ServiceProviderNotFoundException $e) {
+    // This exception is thrown when a non-existent service provider is being fetched.
+    // Proper error message should be returned or logged, and the error should be handled appropriately.
+    die($e);
+} catch (CommonPHP\ServiceManagement\Exceptions\ServiceProviderRegistrationException $e) {
+    // This exception is thrown when there's an issue during the registration of a service provider.
+    // Proper error message should be returned or logged, and the error should be handled appropriately.
+    die($e);
+}
 
 // Request an instance of MyCustomService, passing 'message' as a parameter.
 $obj = $services->get(MyCustomService::class, ['message' => 'Hello, World!']);

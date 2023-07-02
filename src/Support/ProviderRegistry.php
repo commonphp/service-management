@@ -14,6 +14,7 @@
 
 namespace CommonPHP\ServiceManagement\Support;
 
+use CommonPHP\ServiceManagement\Contracts\BootstrapperContract;
 use CommonPHP\ServiceManagement\Contracts\ServiceManagerContract;
 use CommonPHP\ServiceManagement\Contracts\ServiceProviderContract;
 use CommonPHP\ServiceManagement\Exceptions\NoProviderForServiceException;
@@ -22,16 +23,17 @@ use CommonPHP\ServiceManagement\Exceptions\ServiceProviderMissingContractExcepti
 use CommonPHP\ServiceManagement\Exceptions\ServiceProviderNotFoundException;
 use CommonPHP\ServiceManagement\Exceptions\ServiceProviderNotRegisteredException;
 use CommonPHP\ServiceManagement\Exceptions\ServiceProviderRegistrationException;
+use CommonPHP\ServiceManagement\ServiceManager;
 use Throwable;
 
 final class ProviderRegistry
 {
-    private ServiceManagerContract $manager;
+    private ServiceManager $manager;
 
     /** @var ServiceProviderContract[] */
     private array $providers = [];
 
-    public function __construct(ServiceManagerContract $manager)
+    public function __construct(ServiceManager $manager)
     {
         $this->manager = $manager;
     }
@@ -64,6 +66,10 @@ final class ProviderRegistry
         $parameters = array_merge($parameters, ['serviceManager' => $this->manager]);
         try {
             $this->providers[$providerClassName] = $this->manager->di->instantiate($providerClassName, $parameters);
+            if ($this->providers[$providerClassName] instanceof BootstrapperContract)
+            {
+                $this->providers[$providerClassName]->bootstrap($this->manager);
+            }
         } catch (Throwable $t) {
             throw new ServiceProviderRegistrationException($providerClassName, previous: $t);
         }

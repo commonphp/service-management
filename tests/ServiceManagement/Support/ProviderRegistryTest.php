@@ -5,6 +5,9 @@ namespace CommonPHP\Tests\ServiceManagement\Support;
 use CommonPHP\ServiceManagement\Contracts\ServiceManagerContract;
 use CommonPHP\ServiceManagement\Exceptions\NoProviderForServiceException;
 use CommonPHP\ServiceManagement\Exceptions\ServiceProviderNotRegisteredException;
+use CommonPHP\ServiceManagement\ServiceManager;
+use CommonPHP\Tests\Fixtures\BootstrappedService;
+use CommonPHP\Tests\Fixtures\BootstrappedServiceProvider;
 use CommonPHP\Tests\Fixtures\MockProvidedService;
 use CommonPHP\Tests\Fixtures\MockServiceManager;
 use CommonPHP\Tests\Fixtures\MockServiceProvider;
@@ -16,11 +19,11 @@ class ProviderRegistryTest extends TestCase
 {
     private ProviderRegistry $providerRegistry;
     private ServiceProviderContract $mockProvider;
-    private ServiceManagerContract $mockManager;
+    private ServiceManager $mockManager;
 
     function setUp(): void
     {
-        $this->mockManager = new MockServiceManager();
+        $this->mockManager = new ServiceManager();
         $this->providerRegistry = new ProviderRegistry($this->mockManager);
         $this->mockProvider = new MockServiceProvider($this->mockManager);
     }
@@ -89,5 +92,12 @@ class ProviderRegistryTest extends TestCase
         // Check get throws exception if provider not found
         $this->expectException(NoProviderForServiceException::class);
         $this->providerRegistry->get('NonExistentClass');
+    }
+
+    function testServiceBootstrapping()
+    {
+        $this->providerRegistry->registerProvider(BootstrappedServiceProvider::class);
+
+        $this->assertTrue($this->providerRegistry->getProvider(BootstrappedServiceProvider::class)->wasBootstrapped);
     }
 }

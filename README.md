@@ -9,6 +9,7 @@ CommonPHP's Service Manager is a comprehensive solution for managing and injecti
 - Aliasing and interface binding
 - Namespace-based service registration
 - Custom service providers
+- Bootstrapping interface for services and service providers requiring extra instantiation steps
 
 ## ServiceManager vs ServiceContainer
 
@@ -93,6 +94,44 @@ $services->providers->registerProvider(MyServiceProvider::class);
 
 Service providers are classes that implement the `ServiceProviderContract` and are responsible for providing instances of services.
 
+**Bootstrapping Services**
+
+Services that require certain actions upon instantiation that cannot be handled by the constructor alone can implement the `BootstrapperContract`. When such a service is instantiated by the `ServiceManager`, its `bootstrap` method is automatically called:
+
+```php
+class MyService implements BootstrapperContract
+{
+    public function bootstrap(ServiceManager $serviceManager): void
+    {
+        // Bootstrap logic goes here
+    }
+}
+
+$services->register(MyService::class);
+$instance = $services->get(MyService::class); // MyService's bootstrap method will be called
+```
+
+**Bootstrapping Service Providers**
+
+Similarly, service providers that need to perform certain actions upon instantiation can also implement the `BootstrapperContract`. Their `bootstrap` method will be automatically called when they are instantiated:
+
+```php
+class MyServiceProvider implements ServiceProviderContract, BootstrapperContract
+{
+    public function bootstrap(ServiceManager $serviceManager): void
+    {
+        // Bootstrap logic goes here
+    }
+
+    // Implement other methods from ServiceProviderContract...
+}
+
+$services->providers->registerProvider(MyServiceProvider::class); // MyServiceProvider's bootstrap method will be called
+```
+
+In both examples, the `bootstrap` method is intended to be invoked internally by the `ServiceManager` and should not be manually called to prevent unexpected behavior.
+
+
 ## Documentation
 
 Please see the examples directory for more detailed examples on how to use each of the features provided by the Service Manager.
@@ -163,6 +202,10 @@ This is a high-level overview of the API. For detailed information about classes
 
   - **`get(string $className, array $parameters = []): object`**: Retrieves an instance of a service from a provider.
 
+- **`CommonPHP\ServiceManagement\Contracts\BootstrapperContract`**: Interface for services requiring extra instantiation steps.
+
+  - **`bootstrap(ServiceManager $serviceManager): void`**: ecutes the necessary bootstrap actions for the service. This method is intended to be invoked internally by the Service Manager only.
+
 
 ### Examples
 
@@ -175,6 +218,8 @@ Here are some examples of using CommonPHP\ServiceManager. You can find the full 
 - [**Service Container**](https://github.com/commonphp/di/blob/master/examples/service-container.php): Demonstrates how to pass a service container to services, providing them with a way to request other services (see `examples/service-container.php`).
 
 - [**Service Providers**](https://github.com/commonphp/di/blob/master/examples/service-providers.php): Demonstrates how to create and register a custom service provider for providing instances of a service (see `examples/service-providers.php`).
+
+- [**Bootstrapping Services**](https://github.com/commonphp/di/blob/master/examples/bootstrapping.php): Demonstrates how to create and use services that implement the BootstrapperContract (see `examples/bootstrapping.php`).
 
 ## Contributing
 

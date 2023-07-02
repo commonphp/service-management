@@ -3,6 +3,8 @@
 namespace CommonPHP\Tests\ServiceManagement;
 
 use CommonPHP\ServiceManagement\Exceptions\ServiceNotInstanceOfClassException;
+use CommonPHP\Tests\Fixtures\BootstrappedService;
+use CommonPHP\Tests\Fixtures\BootstrappedServiceProvider;
 use PHPUnit\Framework\TestCase;
 use CommonPHP\ServiceManagement\ServiceManager;
 use CommonPHP\ServiceManagement\Exceptions\ClassOrInterfaceNotDefinedException;
@@ -98,5 +100,12 @@ class ServiceManagerTest extends TestCase
         // Try to set a service instance that was already set before
         $this->expectException(ServiceAlreadySetException::class);
         $this->serviceManager->set(MockService::class, new MockService('value4'));
+    }
+
+    function testServiceBootstrapping()
+    {
+        $this->serviceManager->register(BootstrappedService::class);;
+
+        $this->assertTrue($this->serviceManager->get(BootstrappedService::class)->wasBootstrapped);
     }
 }
