@@ -15,7 +15,6 @@
 namespace CommonPHP\ServiceManagement\Support;
 
 use CommonPHP\ServiceManagement\Contracts\BootstrapperContract;
-use CommonPHP\ServiceManagement\Contracts\ServiceManagerContract;
 use CommonPHP\ServiceManagement\Contracts\ServiceProviderContract;
 use CommonPHP\ServiceManagement\Exceptions\NoProviderForServiceException;
 use CommonPHP\ServiceManagement\Exceptions\ServiceProviderAlreadyRegisteredException;
@@ -63,7 +62,6 @@ final class ProviderRegistry
             throw new ServiceProviderMissingContractException($providerClassName);
         }
 
-        $parameters = array_merge($parameters, ['serviceManager' => $this->manager]);
         try {
             $this->providers[$providerClassName] = $this->manager->di->instantiate($providerClassName, $parameters);
             if ($this->providers[$providerClassName] instanceof BootstrapperContract)

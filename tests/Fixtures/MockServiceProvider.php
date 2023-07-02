@@ -2,16 +2,12 @@
 
 namespace CommonPHP\Tests\Fixtures;
 
-use CommonPHP\ServiceManagement\Contracts\ServiceManagerContract;
 use CommonPHP\ServiceManagement\Contracts\ServiceProviderContract;
 
 class MockServiceProvider implements ServiceProviderContract
 {
-    private ServiceManagerContract $serviceManager;
-
-    public function __construct(ServiceManagerContract $serviceManager)
+    public function __construct()
     {
-        $this->serviceManager = $serviceManager;
     }
     public function supports(string $className): bool
     {

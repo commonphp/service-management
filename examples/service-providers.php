@@ -23,16 +23,14 @@ class MyCustomService
 }
 
 // Define a custom service provider that can provide instances of MyCustomService.
-class MyCustomServiceProvider implements CommonPHP\ServiceManagement\Contracts\ServiceProviderContract
+class MyCustomServiceProvider implements CommonPHP\ServiceManagement\Contracts\ServiceProviderContract, CommonPHP\ServiceManagement\Contracts\BootstrapperContract
 {
     private ?MyCustomService $service = null;
 
     // The service provider depends on the ServiceManager.
     private CommonPHP\ServiceManagement\Contracts\ServiceManagerContract $serviceManager;
-    public function __construct(CommonPHP\ServiceManagement\Contracts\ServiceManagerContract $serviceManager)
+    public function __construct()
     {
-        // The $serviceManager parameter name is explicit, it must be exactly this type and exactly this name.
-        $this->serviceManager = $serviceManager;
     }
 
     // The supports method checks if this service provider can provide instances of a given class.
@@ -65,6 +63,13 @@ class MyCustomServiceProvider implements CommonPHP\ServiceManagement\Contracts\S
     {
         // In this case, MyCustomService is a singleton service - only one instance is allowed.
         return true;
+    }
+
+    // Called immediately after this is created
+    function bootstrap(CommonPHP\ServiceManagement\ServiceManager $serviceManager): void
+    {
+        // The $serviceManager parameter name is explicit, it must be exactly this type and exactly this name.
+        $this->serviceManager = $serviceManager;
     }
 }
 
