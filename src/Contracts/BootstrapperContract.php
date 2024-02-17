@@ -1,24 +1,19 @@
 <?php
 
 /**
- * BootstrapperContract Interface
+ * Specifies the bootstrap process for services requiring initialization beyond constructor injection.
  *
- * This interface is implemented by services that need to perform some action upon instantiation
- * that cannot be handled by the constructor alone. For instance, injecting dependencies that
- * were not known at compile time.
+ * This interface is for services that require additional setup after instantiation, which cannot be
+ * accomplished through constructor dependency injection alone. Implementing services will have their
+ * `bootstrap` method called by the ServiceManager, providing them access to the ServiceManager or
+ * DependencyInjector for further configuration or dependency resolution.
  *
- * Services implementing this interface will have their `bootstrap` method called automatically
- * by the Service Manager after instantiation.
- *
- * WARNING: The `bootstrap` method is intended to be invoked internally by the Service Manager
- * only. It is not a part of the public API of the service, and invoking it manually may lead
- * to unexpected behavior.
- *
- * @package    CommonPHP\ServiceManagement
+ * @package CommonPHP\ServiceManagement
  * @subpackage Contracts
- * @author     Timothy McClatchey <timothy@commonphp.org>
- * @copyright  2023 CommonPHP.org
- * @license    http://opensource.org/licenses/MIT MIT License
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ * @internal This interface's methods are intended for internal use by the ServiceManager only.
  */
 
 namespace CommonPHP\ServiceManagement\Contracts;

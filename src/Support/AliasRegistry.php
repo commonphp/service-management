@@ -1,13 +1,18 @@
 <?php
 
 /**
- * A registry for managing service class aliases.
+ * Manages alias mappings for service classes within the service management framework.
  *
- * @package    CommonPHP\ServiceManagement
+ * This class provides a mechanism for registering and resolving aliases to service classes, facilitating flexible
+ * service referencing and abstraction. It supports checking for the existence of aliases, retrieving the service
+ * class for a given alias, and registering new aliases with validation to ensure that aliases and service classes
+ * are properly defined and related.
+ *
+ * @package CommonPHP\ServiceManagement
  * @subpackage Support
- * @author     Timothy McClatchey <timothy@commonphp.org>
- * @copyright  2023 CommonPHP.org
- * @license    http://opensource.org/licenses/MIT MIT License
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
  */
 
 namespace CommonPHP\ServiceManagement\Support;
@@ -21,11 +26,17 @@ use CommonPHP\ServiceManagement\Exceptions\ServiceNotFoundException;
 
 final class AliasRegistry
 {
+    /** @var ServiceManagerContract The service manager instance for checking service existence. */
     private ServiceManagerContract $manager;
 
-    /** @var class-string[] */
+    /** @var class-string[] Registered aliases mapped to their corresponding service classes. */
     private array $aliases = [];
 
+    /**
+     * Initializes the alias registry with a reference to the service manager.
+     *
+     * @param ServiceManagerContract $manager The service manager instance.
+     */
     public function __construct(ServiceManagerContract $manager)
     {
         $this->manager = $manager;

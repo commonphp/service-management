@@ -27,11 +27,17 @@ use Throwable;
 
 final class ProviderRegistry
 {
+    /** @var ServiceManager The service manager instance. */
     private ServiceManager $manager;
 
-    /** @var ServiceProviderContract[] */
+    /** @var ServiceProviderContract[] Registered service providers. */
     private array $providers = [];
 
+    /**
+     * Initializes the provider registry with a reference to the service manager.
+     *
+     * @param ServiceManager $manager The service manager instance.
+     */
     public function __construct(ServiceManager $manager)
     {
         $this->manager = $manager;

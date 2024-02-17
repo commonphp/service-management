@@ -1,15 +1,17 @@
 <?php
 
 /**
- * This contract provides the structure that the ServiceManagerContract implements. While this was initially designed
- * for creating mock classes for unit tests, it could also be used to create custom service manager classes that can
- * integrate with the support classes and service container found in this library
+ * Outlines the required functionality for service managers within the service management framework.
  *
- * @package    CommonPHP\ServiceManagement
+ * This contract specifies methods for registering, setting, retrieving, and checking services by their class names,
+ * serving as a foundation for any service manager implementation. It enables the creation of custom service manager
+ * classes or mock classes for testing, ensuring compatibility with the service container and support classes.
+ *
+ * @package CommonPHP\ServiceManagement
  * @subpackage Contracts
- * @author     Timothy McClatchey <timothy@commonphp.org>
- * @copyright  2023 CommonPHP.org
- * @license    http://opensource.org/licenses/MIT MIT License
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
  */
 
 namespace CommonPHP\ServiceManagement\Contracts;

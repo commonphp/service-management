@@ -1,14 +1,18 @@
 <?php
 
 /**
- * The ServiceProviderContract interfaces defines the contract that service providers must implement. When a service
- * provider is registered, it is
+ * Defines the contract for service providers within the service management framework.
  *
- * @package    CommonPHP\ServiceManagement
+ * Service providers implementing this interface are responsible for the instantiation and management
+ * of specific services. They must define methods to support service instantiation, determine service support,
+ * and identify singleton services. This contract ensures that service providers adhere to a consistent
+ * implementation standard, facilitating their integration and use within the service management system.
+ *
+ * @package CommonPHP\ServiceManagement
  * @subpackage Contracts
- * @author     Timothy McClatchey <timothy@commonphp.org>
- * @copyright  2023 CommonPHP.org
- * @license    http://opensource.org/licenses/MIT MIT License
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
  */
 
 namespace CommonPHP\ServiceManagement\Contracts;

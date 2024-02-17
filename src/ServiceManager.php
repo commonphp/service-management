@@ -1,25 +1,19 @@
 <?php
 
 /**
- * ServiceManager
+ * Manages service registration, resolution, and lifecycle within an application.
  *
- * The ServiceManager class is responsible for registering, managing and resolving services in your application.
- * It provides an abstraction for handling dependency injection and service provisioning using multiple registries
- * and a dependency injector. These services can be easily accessed and manipulated by class name.
+ * This final class is at the core of the service management layer, facilitating dependency injection and service
+ * provisioning through a comprehensive API. It supports explicit registration, instantiation, and resolution of
+ * services, working closely with the DependencyInjector to handle service lifecycles. Additionally, it offers
+ * advanced features such as aliasing and namespace management to organize and retrieve services efficiently.
  *
- * Services can be registered explicitly, set with specific instances, and checked for their existence. If a
- * service is requested that hasn't been instantiated yet, the ServiceManager can also handle the instantiation.
- *
- * The ServiceManager hooks into events of the DependencyInjector's valueFinder and ProviderRegistry's instantiation
- * process to provide the services when required.
- *
- * Furthermore, the ServiceManager includes functionality for working with aliases and namespaces, further
- * simplifying the organization of your services.
- *
- * @package    CommonPHP\ServiceManagement
- * @author     Timothy McClatchey <timothy@commonphp.org>
- * @copyright  2023 CommonPHP.org
- * @license    http://opensource.org/licenses/MIT MIT License
+ * @package CommonPHP\ServiceManagement
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ * @see https://www.php-fig.org/ PSR standards for more details on service containers and dependency injection
+ * @noinspection PhpUnusedParameterInspection
  */
 
 namespace CommonPHP\ServiceManagement;
@@ -27,6 +21,7 @@ namespace CommonPHP\ServiceManagement;
 use CommonPHP\DependencyInjection\DependencyInjector;
 use CommonPHP\ServiceManagement\Contracts\BootstrapperContract;
 use CommonPHP\ServiceManagement\Contracts\ServiceManagerContract;
+use CommonPHP\ServiceManagement\Exceptions\AliasNotRegisteredException;
 use CommonPHP\ServiceManagement\Exceptions\ClassOrInterfaceNotDefinedException;
 use CommonPHP\ServiceManagement\Exceptions\ServiceAlreadyRegisteredException;
 use CommonPHP\ServiceManagement\Exceptions\ServiceAlreadySetException;
@@ -40,14 +35,28 @@ use Throwable;
 
 final class ServiceManager implements ServiceManagerContract
 {
+    /** @var AliasRegistry The registry for service aliases */
     public readonly AliasRegistry $aliases;
+
+    /** @var NamespaceRegistry The registry for service namespaces */
     public readonly NamespaceRegistry $namespaces;
+
+    /** @var ProviderRegistry The registry for service providers */
     public readonly ProviderRegistry $providers;
+
+    /** @var DependencyInjector The dependency injector */
     public readonly DependencyInjector $di;
 
-    // Array to store service configurations and instances
+    /** @var array Stores service configuration and instances */
     private array $services = [];
 
+    /**
+     * Initializes the service manager and its component registries, hooks into the dependency injector,
+     * and registers the ServiceContainer as a service.
+     *
+     * @throws ClassOrInterfaceNotDefinedException
+     * @throws ServiceAlreadyRegisteredException
+     */
     public function __construct()
     {
         $this->di = new DependencyInjector();
@@ -74,6 +83,7 @@ final class ServiceManager implements ServiceManagerContract
      * @return null|object The found service or null if not found.
      * @throws ServiceNotFoundException
      * @throws ServiceResolutionException
+     * @throws AliasNotRegisteredException
      */
     public function lookupValue(string $name, string $typeName, bool &$found): ?object
     {
@@ -131,7 +141,7 @@ final class ServiceManager implements ServiceManagerContract
             if (!$autoRegister) {
                 throw new ServiceNotFoundException($className);
             }
-            $this->register($className, []);
+            $this->register($className);
         }
 
         // Check if it has already been set
@@ -160,6 +170,7 @@ final class ServiceManager implements ServiceManagerContract
      * @return T
      * @throws ServiceNotFoundException
      * @throws ServiceResolutionException
+     * @throws AliasNotRegisteredException
      */
     public function get(string $className, array $parameters = []): object
     {
@@ -175,6 +186,8 @@ final class ServiceManager implements ServiceManagerContract
      *
      * @param string $className The class name of the service to check.
      * @return bool
+     * @throws AliasNotRegisteredException
+     * @throws ServiceResolutionException
      */
     public function has(string $className): bool
     {
@@ -190,6 +203,7 @@ final class ServiceManager implements ServiceManagerContract
      * @param array $parameters The parameters to pass to the service's constructor (used only if instantiation is needed).
      * @return bool|object False if the service cannot be resolved, the instantiated service if it exists, or true if the service exists but $instantiate is false.
      * @throws ServiceResolutionException
+     * @throws AliasNotRegisteredException
      */
     private function resolve(string $className, bool $instantiate, array $parameters = []): bool|object
     {
