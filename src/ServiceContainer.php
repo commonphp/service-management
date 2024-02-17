@@ -1,24 +1,23 @@
 <?php
 
 /**
- * ServiceContainer class
+ * Provides read-only access to services managed by the ServiceManager.
  *
- * The ServiceContainer is the read-only point of access for ServiceManager.
- * ServiceManager should be used by bootstrapping/startup, while the ServiceContainer should be used during execution.
+ * This final class implements the PSR-11 ContainerInterface, offering a standardized mechanism for retrieving
+ * services within an application. It is designed for use during runtime, with the ServiceManager handling
+ * the actual service registration and configuration during bootstrapping/startup. By adhering to PSR-11, it
+ * ensures interoperability with other compliant containers.
  *
- * This class should be PSR-11 compatible, as the exceptions thrown by methods adhere to PSR-11 guidelines.
- *
- * @package    CommonPHP\ServiceManagement
- * @author     Timothy McClatchey <timothy@commonphp.org>
- * @copyright  2023 CommonPHP.org
- * @license    http://opensource.org/licenses/MIT MIT License
+ * @package CommonPHP\ServiceManagement
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ * @see https://www.php-fig.org/psr/psr-11/ PSR-11: Container Interface
  */
 
 namespace CommonPHP\ServiceManagement;
 
 use CommonPHP\ServiceManagement\Contracts\ServiceManagerContract;
-use CommonPHP\ServiceManagement\Exceptions\ServiceNotFoundException;
-use CommonPHP\ServiceManagement\Exceptions\ServiceResolutionException;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -29,8 +28,16 @@ use Psr\Container\ContainerInterface;
  */
 final class ServiceContainer implements ContainerInterface
 {
+    /**
+     * @var ServiceManagerContract The service manager instance.
+     */
     private ServiceManagerContract $manager;
 
+    /**
+     * Initializes the service container with a service manager.
+     *
+     * @param ServiceManagerContract $manager The service manager.
+     */
     public function __construct(ServiceManagerContract $manager)
     {
         $this->manager = $manager;
@@ -43,8 +50,6 @@ final class ServiceContainer implements ContainerInterface
      * @template T
      * @param class-string<T> $id The identifier of the service to retrieve.
      * @return T
-     * @throws ServiceNotFoundException
-     * @throws ServiceResolutionException
      */
     public function get(string $id)
     {
