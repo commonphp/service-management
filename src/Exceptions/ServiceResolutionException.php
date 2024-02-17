@@ -1,23 +1,29 @@
 <?php
 
+/**
+ * Exception for when a service cannot be resolved.
+ *
+ * This exception is used within the service management system to indicate that a service could not be
+ * instantiated or resolved. This may occur for a variety of reasons, such as configuration errors,
+ * missing dependencies, or incorrect service definitions.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Throwable;
 
-/**
- * Exception thrown when an error occurs during the resolution of a service.
- */
-class ServiceResolutionException extends Exception implements ContainerExceptionInterface
+class ServiceResolutionException extends ServiceManagementException implements ContainerExceptionInterface
 {
-    /**
-     * @param string $class The class of the service where resolution failed.
-     * @param int $code The error code (default: 0).
-     * @param Throwable|null $previous  The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $class, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $class, ?Throwable $previous = null)
     {
-        parent::__construct("An error occurred while resolving the service $class.", $code, $previous);
+        parent::__construct("An error occurred while resolving the service $class.", $previous);
+        $this->code = 1418;
     }
 }

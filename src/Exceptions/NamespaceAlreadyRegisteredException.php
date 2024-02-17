@@ -1,24 +1,27 @@
 <?php
 
+/**
+ * Exception for when a namespace is already registered within the service management system.
+ *
+ * This exception is thrown to prevent the duplication of namespace registrations, ensuring that each
+ * namespace is uniquely identified and associated with its respective services and providers.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-use Exception;
 use Throwable;
 
-/**
- * Exception thrown when a namespace is already registered.
- */
-class NamespaceAlreadyRegisteredException extends Exception
+class NamespaceAlreadyRegisteredException extends ServiceManagementException
 {
-    /**
-     * NamespaceAlreadyRegisteredException constructor.
-     *
-     * @param string         $namespace The namespace that is already registered.
-     * @param int            $code      The error code (default: 0).
-     * @param Throwable|null $previous  The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $namespace, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $namespace, ?Throwable $previous = null)
     {
-        parent::__construct("The namespace $namespace is already registered.", $code, $previous);
+        parent::__construct("The namespace $namespace is already registered.", $previous);
+        $this->code = 1406;
     }
 }

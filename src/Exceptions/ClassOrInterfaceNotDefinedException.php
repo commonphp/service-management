@@ -1,25 +1,28 @@
 <?php
 
+/**
+ * Exception for when a specified class or interface is not defined.
+ *
+ * Thrown when the service management system expects a class or interface that does not exist in the
+ * current context. This exception helps identify issues related to missing dependencies or incorrect
+ * service configurations.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-
-use Exception;
 use Throwable;
 
-/**
- * Exception thrown when a class or interface is not defined.
- */
-class ClassOrInterfaceNotDefinedException extends Exception
+class ClassOrInterfaceNotDefinedException extends ServiceManagementException
 {
-    /**
-     * ClassNotDefinedException constructor.
-     *
-     * @param string $class The class that is not defined.
-     * @param int $code The error code (default: 0).
-     * @param Throwable|null $previous The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $class, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $class, ?Throwable $previous = null)
     {
-        parent::__construct("The class or interface $class is not defined.", $code, $previous);
+        parent::__construct("The class or interface $class is not defined.", $previous);
+        $this->code = 1405;
     }
 }

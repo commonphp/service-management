@@ -1,24 +1,28 @@
 <?php
 
+/**
+ * Exception for when an alias class does not exist.
+ *
+ * Thrown when the system attempts to use an alias for a class that cannot be found. This ensures that
+ * alias mappings are valid and point to actual class definitions, preventing runtime errors due to
+ * missing classes.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-use Exception;
 use Throwable;
 
-/**
- * Exception thrown when the alias class for a service is not found.
- */
-class AliasClassNotFoundException extends Exception
+class AliasClassNotFoundException extends ServiceManagementException
 {
-    /**
-     * AliasClassNotFoundException constructor.
-     *
-     * @param string         $class     The class for which the alias class was not found.
-     * @param int            $code      The error code (default: 0).
-     * @param Throwable|null $previous  The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $class, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $class, ?Throwable $previous = null)
     {
-        parent::__construct("The alias class for service $class was not found.", $code, $previous);
+        parent::__construct("The alias class for service $class was not found.", $previous);
+        $this->code = 1403;
     }
 }

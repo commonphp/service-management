@@ -1,24 +1,28 @@
 <?php
 
+/**
+ * Exception for when an alias class is not derived from the service class it's supposed to represent.
+ *
+ * This exception is thrown to indicate a logical inconsistency where an alias class does not have the
+ * correct inheritance relationship with the service class it is intended to represent, either not being
+ * a subclass or not implementing the expected interface.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-use Exception;
 use Throwable;
 
-/**
- * Exception thrown when the alias class and the service class are not derived from each other.
- */
-class AliasClassNotDerivedException extends Exception
+class AliasClassNotDerivedException extends ServiceManagementException
 {
-    /**
-     * AliasClassNotDerivedException constructor.
-     *
-     * @param string         $class     The class that the alias and service are not derived from each other.
-     * @param int            $code      The error code (default: 0).
-     * @param Throwable|null $previous  The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $class, string $alias, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $class, string $alias, ?Throwable $previous = null)
     {
-        parent::__construct("The alias class $alias and the service class $class are not derived from each other.", $code, $previous);
+        parent::__construct("The alias class $alias and the service class $class are not derived from each other.", $previous);
+        $this->code = 1402;
     }
 }

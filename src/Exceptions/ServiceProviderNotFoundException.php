@@ -1,24 +1,28 @@
 <?php
 
+/**
+ * Exception for when a service provider class cannot be found.
+ *
+ * Thrown when the system is unable to locate the class file for a service provider, typically indicating
+ * an issue with the class loader configuration or an incorrect namespace. It helps diagnose and prevent
+ * configuration errors related to service provider registration.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-use Exception;
 use Throwable;
 
-/**
- * Exception thrown when a service provider class is not found.
- */
-class ServiceProviderNotFoundException extends Exception
+class ServiceProviderNotFoundException extends ServiceManagementException
 {
-    /**
-     * ServiceProviderNotFoundException constructor.
-     *
-     * @param string         $class     The class of the service provider that was not found.
-     * @param int            $code      The error code (default: 0).
-     * @param Throwable|null $previous  The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $class, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $class, ?Throwable $previous = null)
     {
-        parent::__construct("The service provider class $class was not found.", $code, $previous);
+        parent::__construct("The service provider class $class was not found.", $previous);
+        $this->code = 1415;
     }
 }

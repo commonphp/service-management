@@ -1,26 +1,28 @@
 <?php
 
+/**
+ * Descriptive exception when an alias is already registered within the service management system.
+ *
+ * This exception is thrown when an attempt is made to register an alias that is already in use by another service.
+ * It ensures the uniqueness of aliases across the service management framework, preventing conflicts and ambiguity
+ * in service resolution.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-use Exception;
 use Throwable;
 
-/**
- * Exception thrown when an alias is already registered for a service in the Dependency Injection container.
- */
-class AliasAlreadyRegisteredException extends Exception
+class AliasAlreadyRegisteredException extends ServiceManagementException
 {
-    /**
-     * AliasAlreadyRegisteredException constructor.
-     *
-     * @param string         $class     The class that the alias can't be used for.
-     * @param string         $alias     The alias that is already registered.
-     * @param string         $service   The service that the alias is registered for.
-     * @param int            $code      The error code (default: 0).
-     * @param Throwable|null $previous  The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $class, string $alias, string $service, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $class, string $alias, string $service, ?Throwable $previous = null)
     {
-        parent::__construct("The alias $alias is already registered for the service $service, it can't be used for the service $class.", $code, $previous);
+        parent::__construct("The alias $alias is already registered for the service $service, it can't be used for the service $class.", $previous);
+        $this->code = 1401;
     }
 }

@@ -1,24 +1,27 @@
 <?php
 
+/**
+ * Exception for when a service provider is already registered within the service management system.
+ *
+ * Thrown to avoid duplication of service provider registrations, ensuring that each provider is uniquely
+ * registered and managed within the system's provider registry.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-use Exception;
 use Throwable;
 
-/**
- * Exception thrown when a service provider is already registered.
- */
-class ServiceProviderAlreadyRegisteredException extends Exception
+class ServiceProviderAlreadyRegisteredException extends ServiceManagementException
 {
-    /**
-     * ServiceProviderAlreadyRegisteredException constructor.
-     *
-     * @param string         $class     The class of the service provider that is already registered.
-     * @param int            $code      The error code (default: 0).
-     * @param Throwable|null $previous  The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $class, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $class, ?Throwable $previous = null)
     {
-        parent::__construct("The service provider $class is already registered.", $code, $previous);
+        parent::__construct("The service provider $class is already registered.", $previous);
+        $this->code = 1413;
     }
 }

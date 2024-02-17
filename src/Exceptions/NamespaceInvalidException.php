@@ -1,24 +1,28 @@
 <?php
 
+/**
+ * Exception for when a provided namespace is not valid according to PHP namespace rules.
+ *
+ * Thrown to indicate that a namespace registration attempt has failed due to the provided namespace
+ * not adhering to the syntactical rules of PHP namespaces. Ensures that only valid namespaces are
+ * registered and used within the system.
+ *
+ * @package CommonPHP\ServiceManagement
+ * @subpackage Exceptions
+ * @author Timothy McClatchey <timothy@commonphp.org>
+ * @copyright 2024 CommonPHP.org
+ * @license http://opensource.org/licenses/MIT MIT License
+ */
+
 namespace CommonPHP\ServiceManagement\Exceptions;
 
-use Exception;
 use Throwable;
 
-/**
- * Exception thrown when a namespace is not a valid PHP namespace.
- */
-class NamespaceInvalidException extends Exception
+class NamespaceInvalidException extends ServiceManagementException
 {
-    /**
-     * NamespaceInvalidException constructor.
-     *
-     * @param string         $namespace The namespace that is not a valid PHP namespace.
-     * @param int            $code      The error code (default: 0).
-     * @param Throwable|null $previous  The previous throwable used for chaining exceptions (default: null).
-     */
-    public function __construct(string $namespace, int $code = 0, ?Throwable $previous = null)
+    public function __construct(string $namespace, ?Throwable $previous = null)
     {
-        parent::__construct("The namespace $namespace is not a valid PHP namespace.", $code, $previous);
+        parent::__construct("The namespace $namespace is not a valid PHP namespace.", $previous);
+        $this->code = 1407;
     }
 }
