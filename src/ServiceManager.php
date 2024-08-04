@@ -221,7 +221,7 @@ final class ServiceManager implements ServiceManagerContract
         // First step is to check if the service has already been registered, and return it,
         // as that will take precedence over the rest.
         if (array_key_exists($className, $this->services)) {
-            return $this->resolveLiteral($className, $instantiate);
+            return $this->resolveLiteral($className, $instantiate, $parameters);
         }
 
         // Next is to check if a service provider exists for this specific class
@@ -246,7 +246,7 @@ final class ServiceManager implements ServiceManagerContract
         }
 
         // Try to resolve the literal service again
-        return $this->resolveLiteral($realClassName, $instantiate);
+        return $this->resolveLiteral($realClassName, $instantiate, $parameters);
     }
 
     /**
@@ -258,7 +258,7 @@ final class ServiceManager implements ServiceManagerContract
      * @return bool|object False if the service cannot be resolved, the instantiated service if it exists, or true if the service exists but $instantiate is false.
      * @throws ServiceResolutionException
      */
-    private function resolveLiteral(string $className, bool $instantiate): bool|object
+    private function resolveLiteral(string $className, bool $instantiate, array $parameters = []): bool|object
     {
         // If the service exists, return true or instantiate (if needed) and return
         // the object depending on the $instantiate state
@@ -266,7 +266,8 @@ final class ServiceManager implements ServiceManagerContract
             if (!$instantiate) return true;
             if (!is_object($this->services[$className])) {
                 try {
-                    $this->services[$className] = $this->di->instantiate($className, $this->services[$className]);
+
+                    $this->services[$className] = $this->di->instantiate($className, array_merge($this->services[$className], $parameters));
                     if ($this->services[$className] instanceof BootstrapperContract)
                     {
                         $this->services[$className]->bootstrap($this);
