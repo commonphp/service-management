@@ -119,6 +119,17 @@ final class ServiceManager implements ServiceManagerContract
     }
 
     /**
+     * Unregister a service and remove access to it
+     * @param string $className The class name of the service to unregister
+     */
+    public function unregister(string $className): void
+    {
+        if (isset($this->services[$className])) {
+            unset($this->services[$className]);
+        }
+    }
+
+    /**
      * Explicitly sets a service by its class name with a specific instance.
      * This method is used when an instance of a service needs to be explicitly set,
      * instead of depending on the DependencyInjector to instantiate it when it's called.
